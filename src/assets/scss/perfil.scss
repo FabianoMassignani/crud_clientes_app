@@ -1,0 +1,16 @@
+.perfil {
+  display: inline;
+  margin-bottom: 3%;
+  .perfil-header {
+    display: flex;
+    padding-top: 3%;
+    padding-left: 1%;
+  }
+
+  .add-button-bilhetes {
+    display: 'flex';
+    justify-content: 'end';
+    align-items: 'end';
+    padding-right: '30px';
+  }
+}
