@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Form, Input, Select, Button, Space } from 'antd';
+import { Form, Input, Select, Button, Switch } from 'antd';
 import { updateUser } from '../../actions/Auth.thunks';
 interface Props extends ConnectedProps<typeof connector> {
   user: IUser
@@ -19,6 +19,7 @@ const _ProfileUpdate = (props: Props) => {
         id: user._id,
         username: user.username,
         email: user.email,
+        active: user.active,
         role: user.role,
       });
     }
@@ -103,15 +104,21 @@ const _ProfileUpdate = (props: Props) => {
         </Select>
       </Form.Item>
 
+      <Form.Item
+        name="active"
+      >
+        Ativo: <Switch />;
+      </Form.Item>
 
       <Form.Item>
-        <Space size="middle" >
+        <div className='update-form-actions'>
           <Button
             type="primary"
             htmlType="submit"
             className="update-form-button"
             onClick={onFinish}
             loading={loading}
+
           >
             Atualizar
           </Button>
@@ -125,7 +132,7 @@ const _ProfileUpdate = (props: Props) => {
           >
             Cancelar
           </Button>
-        </Space>
+        </div>
       </Form.Item>
     </Form >
   );

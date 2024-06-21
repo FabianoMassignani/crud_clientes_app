@@ -1,0 +1,31 @@
+.update-form {
+  margin: 30px auto;
+  max-width: 150px;
+  height: 100%;
+}
+
+.update-form {
+  max-width: 400px;
+}
+
+.update-form-button {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.header {
+  margin-top: 3%;
+  margin-left: 2%;
+}
+
+.table-users {
+  padding-left: 2%;
+  padding-right: 2%;
+}
+
+.update-form-actions {
+  display: flex;
+  padding-top: 1rem;  
+  justify-content: space-between;
+  gap: 1rem;
+}

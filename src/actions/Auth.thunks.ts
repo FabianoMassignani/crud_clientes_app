@@ -93,21 +93,22 @@ export const updateUser =
     }
   };
 
-export const deleteUser = (id: string) => async (dispatch: Dispatch) => {
-  try {
-    dispatch(actions.deleteUser());
+export const deleteUser =
+  (user: IUser, accessToken: string | null) => async (dispatch: Dispatch) => {
+    try {
+      dispatch(actions.deleteUser());
 
-    const res = await del(`${userAPIUrl}/${id}`);
+      const res = await del(`${userAPIUrl}/${user._id}`, accessToken);
 
-    if (res) {
-      dispatch(actions.deleteUserSuccess());
-    } else {
+      if (res) {
+        dispatch(actions.deleteUserSuccess());
+      } else {
+        dispatch(actions.deleteUserFailed());
+      }
+    } catch (error: any) {
       dispatch(actions.deleteUserFailed());
     }
-  } catch (error: any) {
-    dispatch(actions.deleteUserFailed());
-  }
-};
+  };
 
 export const logout = () => async (dispatch: Dispatch) => {
   dispatch(actions.logoutSuccess());

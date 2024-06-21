@@ -12,19 +12,6 @@ const _Profile = (props: Props) => {
 
     const authLinks = (
         <div className="header-profile">
-            {role.map((tag: any) => {
-                let color = 'green';
-
-                if (tag === 'ADMIN') {
-                    color = 'geekblue';
-                }
-
-                return (
-                    <Tag color={color} key={tag}>
-                        {tag.toUpperCase()}
-                    </Tag>
-                );
-            })}
             <UserOutlined style={{ fontSize: '24px' }} />
         </div>
     )

@@ -1,17 +1,33 @@
 import { connect, ConnectedProps } from 'react-redux';
 import { useState, useEffect, } from 'react';
-import { loadAllUsers } from '../../actions/Auth.thunks';
-import { Button, Space, Table, Tag, Modal, } from 'antd';
+import { loadAllUsers, deleteUser } from '../../actions/Auth.thunks';
+import { Button, Space, Table, Tag, Modal } from 'antd';
 import { ProfileUpdate } from '../Profile/ProfileUpdate';
 import type { TableProps } from 'antd';
+import { ExclamationCircleFilled } from '@ant-design/icons';
 
 interface Props extends ConnectedProps<typeof connector> { }
 
 const _ProfileList = (props: Props) => {
-  const { users, loadAllUsers, accessToken, loading } = props;
-
+  const { users, loadAllUsers, deleteUser, accessToken, loading } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState({});
+  const { confirm } = Modal;
+
+  const showConfirm = (user: IUser) => {
+    confirm({
+      title: 'Deseja deletar este usuário?',
+      icon: <ExclamationCircleFilled />,
+      content: 'Esta ação não pode ser desfeita.',
+      onOk() {
+        deleteUser(user, accessToken);
+      },
+      onCancel() {
+      },
+      okText: 'Deletar',
+      cancelText: 'Cancelar',
+    });
+  };
 
   const showModal = () => {
     setIsModalOpen(true);
@@ -29,7 +45,6 @@ const _ProfileList = (props: Props) => {
     setUser(user);
     showModal();
   }
-
 
   useEffect(() => {
     if (!loading)
@@ -94,31 +109,45 @@ const _ProfileList = (props: Props) => {
       key: 'action',
       width: 200,
       render: (_, user) => (
-        <Space size="small">
+        <Space size="small"
+          style={{
+            justifyContent: 'center',
+          }}
+        >
           <Button
             type="primary"
             onClick={() => editarUser(user)}>
             Editar
           </Button>
+
           <Button
             type="primary"
-            danger onClick={() => { }}>
+            danger
+            onClick={() => showConfirm(user)}>
             Deletar
           </Button>
-        </Space>
+        </Space >
       ),
     },
   ];
 
   return (
-    <div>
-      <Table
-        dataSource={dataSource}
-        columns={columns}
-        pagination={false}
-        loading={loading}
-        size='middle'
-      />
+    <div className="table-container">
+
+      <div className='header'>
+        <h2>Usuários</h2>
+      </div>
+
+      <div className='table-users'>
+        <Table
+          dataSource={dataSource}
+          columns={columns}
+          pagination={false}
+          loading={loading}
+          size='middle'
+        />
+      </div>
+
       <Modal
         title="Editar usuário"
         open={isModalOpen}
@@ -144,7 +173,8 @@ const mapStateToProps = (state: AppState) => ({
 });
 
 const mapDispatchToProps = {
-  loadAllUsers
+  loadAllUsers,
+  deleteUser
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);

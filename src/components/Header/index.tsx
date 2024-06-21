@@ -2,7 +2,6 @@ import { NavMenu } from './Menu';
 import { Profile } from './Profile';
 
 export const AppHeader = () => {
-
     return (
         <div className="navbar-section">
             <div className="container">
