@@ -2,7 +2,7 @@ import * as types from '../actions/Auth.constants';
 import { produce } from 'immer';
 
 let userType: IUser = {
-  id: '',
+  _id: '',
   username: '',
   email: '',
   active: false,

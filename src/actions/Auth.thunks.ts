@@ -1,7 +1,7 @@
-import axios from 'axios';
-import { userAPIUrl, authAPIUrl } from '../constants/urls';
 import * as actions from './Auth.actions';
 import { Dispatch } from 'redux';
+import { get, post, put, del } from '../utils/request';
+import { userAPIUrl, authAPIUrl } from '../constants/urls';
 
 export const loadUser = () => async (dispatch: Dispatch) => {
   const userJson = localStorage.getItem('user') || '{}';
@@ -11,8 +11,6 @@ export const loadUser = () => async (dispatch: Dispatch) => {
     if (user) {
       dispatch(actions.userLoaded(user));
     }
-
-    return;
   } catch (error) {
     return;
   }
@@ -21,28 +19,18 @@ export const loadUser = () => async (dispatch: Dispatch) => {
 export const loadAllUsers =
   (accessToken: string | null) => async (dispatch: Dispatch) => {
     try {
-      const res = await axios
-        .get(`${userAPIUrl}/getAll`, {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        })
-        .catch(error => {
-          if (error.response.status === 401) {
-            dispatch(actions.logoutSuccess());
-          }
-
-          return;
-        });
+      const res = await get(`${userAPIUrl}/getAll`, accessToken);
 
       dispatch(actions.loadAllUsers());
-
       if (res) {
         dispatch(actions.loadAllUsersSuccess(res.data.users));
+      } else {
+        dispatch(actions.loadAllUsersFailed());
       }
-
-      dispatch(actions.loadAllUsersFailed());
     } catch (error: any) {
+      if (error.response?.status === 401) {
+        dispatch(actions.logoutSuccess());
+      }
       dispatch(actions.loadAllUsersFailed());
     }
   };
@@ -53,18 +41,15 @@ export const login = (data: ReqLogin) => async (dispatch: Dispatch) => {
   try {
     dispatch(actions.login());
 
-    const response = await axios.post(`${authAPIUrl}/signIn`, {
-      email,
-      password,
-    });
+    const response = await post(`${authAPIUrl}/signIn`, { email, password });
 
     const user = response.data;
 
     if (user.accessToken) {
       dispatch(actions.loginSuccess(user));
+    } else {
+      dispatch(actions.loginFailed());
     }
-
-    dispatch(actions.loginFailed());
   } catch (error: any) {
     dispatch(actions.loginFailed());
   }
@@ -76,16 +61,14 @@ export const register =
     try {
       dispatch(actions.register());
 
-      const res = await axios.post(`${userAPIUrl}/register`, {
-        ...data,
-      });
+      const res = await post(`${userAPIUrl}/register`, data);
 
       if (res) {
         dispatch(actions.registerSuccess(res.data.user));
         navigate('/login');
+      } else {
+        dispatch(actions.registerFailed());
       }
-
-      dispatch(actions.registerFailed());
     } catch (error: any) {
       dispatch(actions.registerFailed());
     }
@@ -97,24 +80,14 @@ export const updateUser =
     try {
       dispatch(actions.updateUser());
 
-      const res = await axios.put(
-        `${userAPIUrl}`,
-        {
-          ...data,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${accessToken}`,
-          },
-        }
-      );
+      const res = await put(`${userAPIUrl}`, data, accessToken);
 
       if (res) {
         dispatch(actions.updateUserSuccess(res.data));
         callback();
+      } else {
+        dispatch(actions.updateUserFailed());
       }
-
-      dispatch(actions.updateUserFailed());
     } catch (error: any) {
       dispatch(actions.updateUserFailed());
     }
@@ -124,13 +97,13 @@ export const deleteUser = (id: string) => async (dispatch: Dispatch) => {
   try {
     dispatch(actions.deleteUser());
 
-    const res = await axios.delete(`${userAPIUrl}/${id}`);
+    const res = await del(`${userAPIUrl}/${id}`);
 
     if (res) {
       dispatch(actions.deleteUserSuccess());
+    } else {
+      dispatch(actions.deleteUserFailed());
     }
-
-    dispatch(actions.deleteUserFailed());
   } catch (error: any) {
     dispatch(actions.deleteUserFailed());
   }
