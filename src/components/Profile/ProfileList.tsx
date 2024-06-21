@@ -1,15 +1,14 @@
 import { connect, ConnectedProps } from 'react-redux';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, } from 'react';
 import { loadAllUsers } from '../../actions/Auth.thunks';
 import { Button, Space, Table, Tag, Modal, } from 'antd';
 import { ProfileUpdate } from '../Profile/ProfileUpdate';
 import type { TableProps } from 'antd';
 
-
 interface Props extends ConnectedProps<typeof connector> { }
 
 const _ProfileList = (props: Props) => {
-  const { users, loadAllUsers, accessToken } = props;
+  const { users, loadAllUsers, accessToken, loading } = props;
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState({});
@@ -26,15 +25,22 @@ const _ProfileList = (props: Props) => {
     loadAllUsers(accessToken);
   }
 
-  useEffect(() => {
-    onLoad();
-  }, []);
+  const editarUser = (user: IUser) => {
+    setUser(user);
+    showModal();
+  }
 
-  const dataSource = users.map((user: IUser) => {
+
+  useEffect(() => {
+    if (!loading)
+      loadAllUsers(accessToken);
+  }, [loadAllUsers, accessToken, loading]);
+
+  const dataSource = users.map((item: IUser) => {
     return {
-      ...user,
-      key: user._id,
-      active: user.active
+      ...item,
+      key: item._id,
+      active: item.active
     };
   });
 
@@ -89,13 +95,16 @@ const _ProfileList = (props: Props) => {
       width: 200,
       render: (_, user) => (
         <Space size="small">
-          <Button type="primary" onClick={
-            () => {
-              setUser(user);
-              showModal();
-            }
-          }>Editar</Button>
-          <Button type="primary" danger onClick={() => { }}>Deletar</Button>
+          <Button
+            type="primary"
+            onClick={() => editarUser(user)}>
+            Editar
+          </Button>
+          <Button
+            type="primary"
+            danger onClick={() => { }}>
+            Deletar
+          </Button>
         </Space>
       ),
     },
@@ -103,7 +112,13 @@ const _ProfileList = (props: Props) => {
 
   return (
     <div>
-      <Table dataSource={dataSource} columns={columns} pagination={false} />
+      <Table
+        dataSource={dataSource}
+        columns={columns}
+        pagination={false}
+        loading={loading}
+        size='middle'
+      />
       <Modal
         title="Editar usuário"
         open={isModalOpen}
@@ -125,6 +140,7 @@ const mapStateToProps = (state: AppState) => ({
   isAuthenticated: state.auth.isAuthenticated,
   accessToken: state.auth.accessToken,
   users: state.auth.users,
+  userCurrent: state.auth.user,
 });
 
 const mapDispatchToProps = {

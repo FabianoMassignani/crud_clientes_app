@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Form, Input, Select, Button } from 'antd';
+import { Form, Input, Select, Button, Space } from 'antd';
 import { updateUser } from '../../actions/Auth.thunks';
 interface Props extends ConnectedProps<typeof connector> {
   user: IUser
@@ -10,7 +10,7 @@ interface Props extends ConnectedProps<typeof connector> {
 }
 
 const _ProfileUpdate = (props: Props) => {
-  const { user, accessToken, updateUser, handleClose, onLoad } = props;
+  const { user, accessToken, updateUser, handleClose, onLoad, loading } = props;
   const [form] = Form.useForm();
 
   useEffect(() => {
@@ -105,25 +105,29 @@ const _ProfileUpdate = (props: Props) => {
 
 
       <Form.Item>
-        <Button
-          type="primary"
-          htmlType="submit"
-          className="update-form-button"
-          onClick={onFinish}
-        >
-          Atualizar
-        </Button>
+        <Space size="middle" >
+          <Button
+            type="primary"
+            htmlType="submit"
+            className="update-form-button"
+            onClick={onFinish}
+            loading={loading}
+          >
+            Atualizar
+          </Button>
 
-        <Button
-          type="default"
-          htmlType="button"
-          className="update-form-button"
-          onClick={handleClose}
-        >
-          Cancelar
-        </Button>
+          <Button
+            type="default"
+            htmlType="button"
+            className="update-form-button"
+            onClick={handleClose}
+            loading={loading}
+          >
+            Cancelar
+          </Button>
+        </Space>
       </Form.Item>
-    </Form>
+    </Form >
   );
 };
 
