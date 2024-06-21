@@ -27,7 +27,7 @@ interface ResLoginApi extends Res {
 }
 
 interface IUser {
-  id: string;
+  _id: string;
   username: string;
   email: string;
   role: [string];

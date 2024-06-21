@@ -21,11 +21,19 @@ export const loadUser = () => async (dispatch: Dispatch) => {
 export const loadAllUsers =
   (accessToken: string | null) => async (dispatch: Dispatch) => {
     try {
-      const res = await axios.get(`${userAPIUrl}/getAll`, {
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      });
+      const res = await axios
+        .get(`${userAPIUrl}/getAll`, {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        })
+        .catch(error => {
+          if (error.response.status === 401) {
+            dispatch(actions.logoutSuccess());
+          }
+
+          return;
+        });
 
       dispatch(actions.loadAllUsers());
 
@@ -84,17 +92,26 @@ export const register =
   };
 
 export const updateUser =
-  (data: ReqUpdateUser, handleOk: () => void) => async (dispatch: Dispatch) => {
+  (data: ReqUpdateUser, accessToken: string, callback: () => void) =>
+  async (dispatch: Dispatch) => {
     try {
       dispatch(actions.updateUser());
 
-      const res = await axios.put(`${userAPIUrl}`, {
-        ...data,
-      });
+      const res = await axios.put(
+        `${userAPIUrl}`,
+        {
+          ...data,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        }
+      );
 
       if (res) {
         dispatch(actions.updateUserSuccess(res.data));
-        handleOk();
+        callback();
       }
 
       dispatch(actions.updateUserFailed());

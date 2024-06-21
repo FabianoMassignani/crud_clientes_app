@@ -1,40 +1,39 @@
 import { connect, ConnectedProps } from 'react-redux';
 import { useState, useEffect } from 'react';
 import { loadAllUsers } from '../../actions/Auth.thunks';
-import { Button, Space, Table, Tag, Modal, Form } from 'antd';
+import { Button, Space, Table, Tag, Modal, } from 'antd';
 import { ProfileUpdate } from '../Profile/ProfileUpdate';
 import type { TableProps } from 'antd';
-import { updateUser } from '../../actions/Auth.thunks';
 
 
 interface Props extends ConnectedProps<typeof connector> { }
 
 const _ProfileList = (props: Props) => {
+  const { users, loadAllUsers, accessToken } = props;
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState({});
-  const form = Form.useForm();
 
   const showModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleOk = () => {
-
+  const handleClose = () => {
     setIsModalOpen(false);
   };
 
-  const handleCancel = () => {
-    setIsModalOpen(false);
-  };
+  const onLoad = () => {
+    loadAllUsers(accessToken);
+  }
 
   useEffect(() => {
-    props.loadAllUsers(props.accessToken);
+    onLoad();
   }, []);
 
-  const dataSource = props.users.map((user: IUser) => {
+  const dataSource = users.map((user: IUser) => {
     return {
       ...user,
-      key: user.id,
+      key: user._id,
       active: user.active
     };
   });
@@ -100,22 +99,21 @@ const _ProfileList = (props: Props) => {
         </Space>
       ),
     },
-
   ];
 
   return (
     <div>
       <Table dataSource={dataSource} columns={columns} pagination={false} />
-
       <Modal
         title="Editar usuário"
         open={isModalOpen}
-        onOk={handleOk}
-        onCancel={handleCancel}
+        footer={null}
+        onCancel={handleClose}
       >
         <ProfileUpdate
           user={user}
-          form={form}
+          handleClose={handleClose}
+          onLoad={onLoad}
         />
       </Modal>
     </div>

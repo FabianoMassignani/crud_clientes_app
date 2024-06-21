@@ -1,39 +1,40 @@
 import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
 import { UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Form, Input, Select } from 'antd';
-import { useNavigate } from 'react-router-dom';
-import { PATH } from '../../constants/paths';
-
+import { Form, Input, Select, Button } from 'antd';
+import { updateUser } from '../../actions/Auth.thunks';
 interface Props extends ConnectedProps<typeof connector> {
-  user: {
-    username: string;
-    email: string;
-    role: string[];
-  };
-  form: any
+  user: IUser
+  handleClose: () => void
+  onLoad: () => void
 }
 
 const _ProfileUpdate = (props: Props) => {
-  const navigate = useNavigate();
-  const { user, isAuthenticated } = props;
+  const { user, accessToken, updateUser, handleClose, onLoad } = props;
   const [form] = Form.useForm();
-
-  useEffect(() => {
-    if (isAuthenticated) {
-      navigate(PATH.PROFILE);
-    }
-  }, [isAuthenticated, navigate]);
 
   useEffect(() => {
     if (user) {
       form.setFieldsValue({
+        id: user._id,
         username: user.username,
         email: user.email,
         role: user.role,
       });
     }
   }, [user, form]);
+
+  const onFinish = () => {
+    const values = form.getFieldsValue();
+
+    const callback = () => {
+      form.resetFields();
+      handleClose();
+      onLoad();
+    }
+
+    updateUser(values, accessToken, callback);
+  };
 
   return (
     <Form
@@ -42,6 +43,12 @@ const _ProfileUpdate = (props: Props) => {
       className="update-form"
       initialValues={{ remember: true }}
     >
+      <Form.Item
+        name="id"
+        hidden
+      >
+      </Form.Item>
+
       <Form.Item
         name="username"
         rules={[
@@ -95,6 +102,27 @@ const _ProfileUpdate = (props: Props) => {
           <Select.Option value="USER">User</Select.Option>
         </Select>
       </Form.Item>
+
+
+      <Form.Item>
+        <Button
+          type="primary"
+          htmlType="submit"
+          className="update-form-button"
+          onClick={onFinish}
+        >
+          Atualizar
+        </Button>
+
+        <Button
+          type="default"
+          htmlType="button"
+          className="update-form-button"
+          onClick={handleClose}
+        >
+          Cancelar
+        </Button>
+      </Form.Item>
     </Form>
   );
 };
@@ -107,7 +135,7 @@ const mapStateToProps = (state: any) => ({
 });
 
 const mapDispatchToProps = {
-  // Add any dispatch actions here
+  updateUser
 };
 
 const connector = connect(mapStateToProps, mapDispatchToProps);
