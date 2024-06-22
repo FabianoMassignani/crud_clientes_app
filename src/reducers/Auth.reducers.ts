@@ -16,6 +16,7 @@ const initialState = {
   accessToken: null,
   user: userType,
   users: [],
+  usersLength: 0,
 };
 
 export const authReducer = (state = initialState, action: ActionRedux) =>
@@ -66,7 +67,8 @@ export const authReducer = (state = initialState, action: ActionRedux) =>
         break;
       case types.LOAD_ALL_USERS_SUCCESS:
         draft.loading = false;
-        draft.users = action.payload;
+        draft.users = action.payload.users;
+        draft.usersLength = action.payload.total;
         break;
       case types.LOAD_ALL_USERS_FAILED:
         draft.loading = false;

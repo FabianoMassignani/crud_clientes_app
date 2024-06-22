@@ -17,6 +17,19 @@ axiosInstance.interceptors.response.use(
   }
 );
 
+export const getAll = async (
+  url: string,
+  accessToken?: string | null,
+  search?: string,
+  limit?: number,
+  page?: number
+) => {
+  const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
+  const query = `?search=${search}&limit=${limit}&page=${page}`;
+
+  return axiosInstance.get(`${url}${query}`, { headers });
+};
+
 export const get = async (url: string, accessToken?: string | null) => {
   const headers = accessToken ? { Authorization: `Bearer ${accessToken}` } : {};
 

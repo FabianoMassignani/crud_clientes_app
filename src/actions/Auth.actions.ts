@@ -1,10 +1,11 @@
+import { PayloadAction } from '@reduxjs/toolkit';
 import * as types from './Auth.constants';
 
 export const loadAllUsers = () => ({
   type: types.LOAD_ALL_USERS,
 });
 
-export const loadAllUsersSuccess = (payload: IUser[]) => ({
+export const loadAllUsersSuccess = (payload: PayloadAction) => ({
   type: types.LOAD_ALL_USERS_SUCCESS,
   payload,
 });

@@ -1,7 +1,7 @@
 import { connect, ConnectedProps } from 'react-redux';
 import { useState, useEffect, } from 'react';
 import { loadAllUsers, deleteUser } from '../../actions/Auth.thunks';
-import { Button, Space, Table, Tag, Modal } from 'antd';
+import { Button, Space, Table, Tag, Modal, Input } from 'antd';
 import { ProfileUpdate } from '../Profile/ProfileUpdate';
 import type { TableProps } from 'antd';
 import { ExclamationCircleFilled } from '@ant-design/icons';
@@ -9,7 +9,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 interface Props extends ConnectedProps<typeof connector> { }
 
 const _ProfileList = (props: Props) => {
-  const { users, loadAllUsers, deleteUser, accessToken, loading, userCurrent } = props;
+  const { users, usersLength, loadAllUsers, deleteUser, accessToken, loading, userCurrent } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState({});
   const { confirm } = Modal;
@@ -37,8 +37,23 @@ const _ProfileList = (props: Props) => {
     setIsModalOpen(false);
   };
 
-  const onLoad = () => {
-    loadAllUsers(accessToken);
+  const onLoad = (
+    search: string,
+    limit: number,
+    page: number
+  ) => {
+    loadAllUsers(accessToken, search, limit, page);
+  }
+
+  const onLoadTimered = (search: string) => {
+    let timer
+
+    clearTimeout(timer);
+
+    timer = setTimeout(() => {
+      onLoad(search, 10, 0);
+    }, 500);
+
   }
 
   const editarUser = (user: IUser) => {
@@ -48,8 +63,8 @@ const _ProfileList = (props: Props) => {
 
   useEffect(() => {
     if (!loading)
-      loadAllUsers(accessToken);
-  }, [loadAllUsers, accessToken, loading]);
+      onLoad('', 10, 0);
+  }, [accessToken, loading]);
 
   const dataSource = users.map((item: IUser) => {
     return {
@@ -69,6 +84,16 @@ const _ProfileList = (props: Props) => {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
+    },
+    {
+      title: 'Telefone',
+      dataIndex: 'phone',
+      key: 'phone',
+    },
+    {
+      title: 'CPF',
+      dataIndex: 'cpf',
+      key: 'cpf',
     },
     {
       title: 'Ativo',
@@ -142,9 +167,26 @@ const _ProfileList = (props: Props) => {
 
       <div className='table-users'>
         <Table
+          title={
+            () => (
+              <Input.Search
+                placeholder="Pesquisar"
+                allowClear
+                enterButton
+                onSearch={value => onLoadTimered(value)}
+              />
+            )
+          }
           dataSource={dataSource}
           columns={columns}
-          pagination={false}
+          pagination={{
+            pageSize: 10,
+            total: usersLength,
+            showSizeChanger: false,
+            onChange: (page) => {
+              onLoad('', 10, (page - 1) * 10);
+            }
+          }}
           loading={
             {
               spinning: loading,
@@ -177,6 +219,7 @@ const mapStateToProps = (state: AppState) => ({
   isAuthenticated: state.auth.isAuthenticated,
   accessToken: state.auth.accessToken,
   users: state.auth.users,
+  usersLength: state.auth.usersLength,
   userCurrent: state.auth.user,
 });
 

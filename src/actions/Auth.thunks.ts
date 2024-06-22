@@ -1,6 +1,6 @@
 import * as actions from './Auth.actions';
 import { Dispatch } from 'redux';
-import { get, post, put, del } from '../utils/request';
+import { getAll, post, put, del } from '../utils/request';
 import { userAPIUrl, authAPIUrl } from '../constants/urls';
 
 export const loadUser = () => async (dispatch: Dispatch) => {
@@ -17,13 +17,25 @@ export const loadUser = () => async (dispatch: Dispatch) => {
 };
 
 export const loadAllUsers =
-  (accessToken: string | null) => async (dispatch: Dispatch) => {
+  (
+    accessToken: string | null,
+    search?: string,
+    limit?: number,
+    page?: number
+  ) =>
+  async (dispatch: Dispatch) => {
     try {
-      const res = await get(`${userAPIUrl}/getAll`, accessToken);
+      const res = await getAll(
+        `${userAPIUrl}/getAll`,
+        accessToken,
+        search || '',
+        limit || 10,
+        page || 0
+      );
 
       dispatch(actions.loadAllUsers());
       if (res) {
-        dispatch(actions.loadAllUsersSuccess(res.data.users));
+        dispatch(actions.loadAllUsersSuccess(res.data));
       } else {
         dispatch(actions.loadAllUsersFailed());
       }
