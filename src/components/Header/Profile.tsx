@@ -1,6 +1,4 @@
-import { UserOutlined } from '@ant-design/icons'
 import { logout } from '../../actions/Auth.thunks'
-import { Tag } from 'antd'
 import { connect, ConnectedProps } from 'react-redux'
 
 interface Props extends ConnectedProps<typeof connector> { }
@@ -8,11 +6,9 @@ interface Props extends ConnectedProps<typeof connector> { }
 const _Profile = (props: Props) => {
     const { isAuthenticated, user } = props
 
-    const role = user?.role || []
-
     const authLinks = (
         <div className="header-profile">
-            <UserOutlined style={{ fontSize: '24px' }} />
+            <span style={{ fontSize: '20px' }} >{user?.username} </span>
         </div>
     )
 

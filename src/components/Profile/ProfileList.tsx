@@ -9,7 +9,7 @@ import { ExclamationCircleFilled } from '@ant-design/icons';
 interface Props extends ConnectedProps<typeof connector> { }
 
 const _ProfileList = (props: Props) => {
-  const { users, loadAllUsers, deleteUser, accessToken, loading } = props;
+  const { users, loadAllUsers, deleteUser, accessToken, loading, userCurrent } = props;
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [user, setUser] = useState({});
   const { confirm } = Modal;
@@ -116,6 +116,7 @@ const _ProfileList = (props: Props) => {
         >
           <Button
             type="primary"
+            disabled={!userCurrent.role.includes('ADMIN')}
             onClick={() => editarUser(user)}>
             Editar
           </Button>
@@ -123,6 +124,7 @@ const _ProfileList = (props: Props) => {
           <Button
             type="primary"
             danger
+            disabled={!userCurrent.role.includes('ADMIN')}
             onClick={() => showConfirm(user)}>
             Deletar
           </Button>
@@ -143,7 +145,12 @@ const _ProfileList = (props: Props) => {
           dataSource={dataSource}
           columns={columns}
           pagination={false}
-          loading={loading}
+          loading={
+            {
+              spinning: loading,
+              size: 'large',
+            }
+          }
           size='middle'
         />
       </div>
@@ -153,6 +160,7 @@ const _ProfileList = (props: Props) => {
         open={isModalOpen}
         footer={null}
         onCancel={handleClose}
+        centered
       >
         <ProfileUpdate
           user={user}

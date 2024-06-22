@@ -1,5 +1,5 @@
 import { Form, Input, Button, Select } from 'antd';
-import { UserOutlined, LockOutlined, MailOutlined } from '@ant-design/icons';
+import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import { connect, ConnectedProps } from 'react-redux';
 import { Link, useNavigate } from 'react-router-dom';
 import { register } from '../../actions/Auth.thunks';
@@ -26,12 +26,15 @@ const _Register = (props: Props) => {
     navigate(PATH.PROFILE);
   }
 
+
+
+
   return (
     <div className="container">
-      <div className="login-form">
+      <div className="register-form">
         <Form
-          name="login_form"
-          className="login-form"
+          name="register_form"
+          className="register-form"
           initialValues={{ remember: true }}
           onFinish={onFinish}
           onFinishFailed={onFinishFailed}
@@ -76,7 +79,7 @@ const _Register = (props: Props) => {
               },
             ]}
           >
-            <Input
+            <Input.Password
               prefix={<LockOutlined className="site-form-item-icon" />}
               type="password"
               placeholder="Password"
@@ -84,18 +87,40 @@ const _Register = (props: Props) => {
           </Form.Item>
 
           <Form.Item
-            name="confirmPassword"
+            name="confirm"
+            dependencies={['password']}
+            hasFeedback
             rules={[
               {
                 required: true,
-                message: 'Por favor, confirme sua senha!',
+                message: 'Please confirm your password!',
               },
+              ({ getFieldValue }) => ({
+                validator(_, value) {
+                  if (!value || getFieldValue('password') === value) {
+                    return Promise.resolve();
+                  }
+                  return Promise.reject(new Error('The new password that you entered do not match!'));
+                },
+              }),
             ]}
           >
-            <Input
+            <Input.Password
               prefix={<LockOutlined className="site-form-item-icon" />}
-              type="password"
               placeholder="Confirm Password"
+            />
+          </Form.Item>
+
+          <Form.Item
+            name="phone"
+            rules={[{
+              message: "Por favor, insira um número de telefone válido!",
+              pattern: new RegExp(/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/)
+            }]}
+          >
+            <Input
+              prefix={<PhoneOutlined className="site-form-item-icon" />}
+              placeholder="Phone"
             />
           </Form.Item>
 

@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 import { connect, ConnectedProps } from 'react-redux';
-import { UserOutlined, MailOutlined } from '@ant-design/icons';
-import { Form, Input, Select, Button, Switch } from 'antd';
+import { UserOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons';
+import { Form, Input, Select, Button, Switch, Tag } from 'antd';
 import { updateUser } from '../../actions/Auth.thunks';
+
 interface Props extends ConnectedProps<typeof connector> {
   user: IUser
   handleClose: () => void
@@ -16,11 +17,8 @@ const _ProfileUpdate = (props: Props) => {
   useEffect(() => {
     if (user) {
       form.setFieldsValue({
+        ...user,
         id: user._id,
-        username: user.username,
-        email: user.email,
-        active: user.active,
-        role: user.role,
       });
     }
   }, [user, form]);
@@ -86,6 +84,114 @@ const _ProfileUpdate = (props: Props) => {
       </Form.Item>
 
       <Form.Item
+        name="phone"
+        rules={[{
+          message: "Por favor, insira um número de telefone válido!",
+          pattern: new RegExp(/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/)
+        }]}
+      >
+        <Input
+          prefix={<PhoneOutlined className="site-form-item-icon" />}
+          placeholder="Phone"
+        />
+      </Form.Item>
+
+      <div className='update-form-cpf-cnpj'
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '10px'
+        }}>
+        <Form.Item
+          name="cpf"
+          rules={
+            [{
+              message: "Por favor, insira um CPF válido!",
+              pattern: new RegExp(/^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}$/)
+            }]
+          }
+        >
+          <Input
+            placeholder="CPF"
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="cnpj"
+          rules={
+            [{
+              message: "Por favor, insira um CNPJ válido!",
+              pattern: new RegExp(/^[0-9]{2}\.?[0-9]{3}\.?[0-9]{3}\/?[0-9]{4}\-?[0-9]{2}$/)
+            }]
+          }
+        >
+          <Input
+
+            placeholder="CNPJ"
+          />
+        </Form.Item>
+
+      </div>
+      <Form.Item
+        name="endereco"
+      >
+        <Input
+          placeholder="Endereço"
+        />
+      </Form.Item>
+
+      <div className='update-form-cep-cidade-estado'
+        style={{
+          display: 'flex',
+          justifyContent: 'space-between',
+          gap: '10px'
+        }}
+      >
+        <Form.Item
+          name="cep"
+          rules={
+            [{
+              message: "Por favor, insira um CEP válido!",
+              pattern: new RegExp(/^\d{5}-\d{3}$/)
+            }]
+          }
+        >
+          <Input
+            placeholder="CEP"
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="cidade"
+          rules={
+            [{
+              type: 'string',
+              message: "Por favor, insira uma cidade válida!",
+            }]
+          }
+
+        >
+          <Input
+            placeholder="Cidade"
+          />
+        </Form.Item>
+
+        <Form.Item
+          name="estado"
+          rules={
+            [{
+              type: 'string',
+              message: "Por favor, insira um estado válido!",
+            }]
+          }
+        >
+          <Input
+            placeholder="Estado"
+          />
+        </Form.Item>
+
+      </div>
+      <Form.Item
         name="role"
         rules={[
           {
@@ -98,6 +204,22 @@ const _ProfileUpdate = (props: Props) => {
           placeholder="Selecione seu papel"
           allowClear
           mode="multiple"
+          tagRender={(props) => {
+            const { label, value } = props;
+
+            let color = 'green';
+
+            if (value === 'ADMIN') {
+              color = 'geekblue';
+            }
+
+            return (
+              <Tag color={color}  >
+                {label}
+              </Tag>
+            );
+          }
+          }
         >
           <Select.Option value="ADMIN">Admin</Select.Option>
           <Select.Option value="USER">User</Select.Option>
@@ -107,7 +229,10 @@ const _ProfileUpdate = (props: Props) => {
       <Form.Item
         name="active"
       >
-        Ativo: <Switch />;
+        Ativo:
+        <Switch
+          defaultChecked={user.active}
+        />;
       </Form.Item>
 
       <Form.Item>
@@ -118,7 +243,6 @@ const _ProfileUpdate = (props: Props) => {
             className="update-form-button"
             onClick={onFinish}
             loading={loading}
-
           >
             Atualizar
           </Button>
