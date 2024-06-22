@@ -9,7 +9,7 @@ interface Props extends ConnectedProps<typeof connector> { }
 
 const _Register = (props: Props) => {
   const navigate = useNavigate();
-  const { register, isAuthenticated } = props;
+  const { register } = props;
 
 
   const onFinish = (values: ReqRegister) => {
@@ -21,13 +21,6 @@ const _Register = (props: Props) => {
   const onFinishFailed = (errorInfo: any) => {
     console.log('Failed:', errorInfo);
   };
-
-  if (isAuthenticated) {
-    navigate(PATH.PROFILE);
-  }
-
-
-
 
   return (
     <div className="container">
@@ -93,21 +86,21 @@ const _Register = (props: Props) => {
             rules={[
               {
                 required: true,
-                message: 'Please confirm your password!',
+                message: 'Por favor, confirme sua senha!',
               },
               ({ getFieldValue }) => ({
                 validator(_, value) {
                   if (!value || getFieldValue('password') === value) {
                     return Promise.resolve();
                   }
-                  return Promise.reject(new Error('The new password that you entered do not match!'));
+                  return Promise.reject(new Error('As senhas não coincidem!'));
                 },
               }),
             ]}
           >
             <Input.Password
               prefix={<LockOutlined className="site-form-item-icon" />}
-              placeholder="Confirm Password"
+              placeholder="Confirma Password"
             />
           </Form.Item>
 

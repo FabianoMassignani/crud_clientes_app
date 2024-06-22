@@ -46,9 +46,7 @@ export const authReducer = (state = initialState, action: ActionRedux) =>
         break;
       case types.REGISTER_SUCCESS:
         localStorage.setItem('user', JSON.stringify(action.payload));
-        draft.isAuthenticated = true;
         draft.loading = false;
-        draft.accessToken = action.payload.accessToken;
         draft.user = action.payload;
         break;
       case types.REGISTER_FAILED:
