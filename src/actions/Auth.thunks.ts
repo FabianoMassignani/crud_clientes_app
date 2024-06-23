@@ -73,7 +73,7 @@ export const register =
     try {
       dispatch(actions.register());
 
-      const res = await post(`${userAPIUrl}/register`, data);
+      const res = await post(`${userAPIUrl}`, data);
 
       if (res) {
         dispatch(actions.registerSuccess(res.data.user));

@@ -16,9 +16,23 @@ npm install
 
 ```
 
-3. Inicie o servidor de desenvolvimento da aplicação e do servidor:
+3. Inicie o servidor de desenvolvimento da aplicação:
 
 ```
 npm run dev
 
+```
+
+## Rodar em container Docker
+
+1. Crie a imagem do Docker:
+
+```
+docker build -t app .
+```
+
+2. Execute o container:
+
+```
+docker run -p 5173:5173 -d app
 ```
