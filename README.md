@@ -23,6 +23,12 @@ npm run dev
 
 ```
 
+4. Abra o navegador e acesse a aplicação em:
+
+```
+http://localhost:5173
+```
+
 ## Rodar em container Docker
 
 1. Crie a imagem do Docker:
@@ -35,4 +41,10 @@ docker build -t app .
 
 ```
 docker run -p 5173:5173 -d app
+```
+
+3. Abra o navegador e acesse a aplicação em:
+
+```
+http://localhost:5173
 ```
