@@ -18,7 +18,7 @@ const _ProfileUpdate = (props: Props) => {
     if (user) {
       form.setFieldsValue({
         ...user,
-        id: user._id,
+        _id: user._id,
       });
     }
   }, [user, form]);
@@ -43,7 +43,7 @@ const _ProfileUpdate = (props: Props) => {
       initialValues={{ remember: true }}
     >
       <Form.Item
-        name="id"
+        name="_id"
         hidden
       >
       </Form.Item>
@@ -63,38 +63,46 @@ const _ProfileUpdate = (props: Props) => {
         />
       </Form.Item>
 
-      <Form.Item
-        name="email"
-        rules={[
-          {
-            required: true,
-            message: 'Por favor, insira seu email!',
-          },
-          {
-            type: 'email',
-            message: 'Por favor, insira um email válido!',
-          },
-        ]}
-      >
-        <Input
-          prefix={<MailOutlined className="site-form-item-icon" />}
-          placeholder="Email"
-          type="email"
-        />
-      </Form.Item>
+      <div className='update-form-cpf-cnpj'
+        style={{
+          display: 'grid',
+          gridTemplateColumns: '1fr 1fr',
+          gap: '10px'
+        }}>
+        <Form.Item
+          name="email"
+          rules={[
+            {
+              required: true,
+              message: 'Por favor, insira seu email!',
+            },
+            {
+              type: 'email',
+              message: 'Por favor, insira um email válido!',
+            },
+          ]}
+        >
+          <Input
+            prefix={<MailOutlined className="site-form-item-icon" />}
+            placeholder="Email"
+            type="email"
+          />
+        </Form.Item>
 
-      <Form.Item
-        name="phone"
-        rules={[{
-          message: "Por favor, insira um número de telefone válido!",
-          pattern: new RegExp(/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/)
-        }]}
-      >
-        <Input
-          prefix={<PhoneOutlined className="site-form-item-icon" />}
-          placeholder="Phone"
-        />
-      </Form.Item>
+        <Form.Item
+          name="phone"
+          rules={[{
+            message: "Por favor, insira um número de telefone válido!",
+            pattern: new RegExp(/^\(?\d{2}\)?\s?\d{4,5}-?\d{4}$/)
+          }]}
+        >
+          <Input
+            prefix={<PhoneOutlined className="site-form-item-icon" />}
+            placeholder="Phone"
+          />
+        </Form.Item>
+
+      </div>
 
       <div className='update-form-cpf-cnpj'
         style={{
@@ -191,6 +199,25 @@ const _ProfileUpdate = (props: Props) => {
         </Form.Item>
 
       </div>
+
+      <Form.Item
+        name="tags"
+      >
+        <Select
+          placeholder="Selecione suas tags"
+          allowClear
+          mode="tags"
+        >
+          <Select.Option value="Animado">Animado</Select.Option>
+          <Select.Option value="Confiante">Confiante</Select.Option>
+          <Select.Option value="Alegre">Alegre</Select.Option>
+          <Select.Option value="Triste">Triste</Select.Option>
+          <Select.Option value="Calmo">Calmo</Select.Option>
+          <Select.Option value="Estressado">Estressado</Select.Option>
+        </Select>
+
+      </Form.Item>
+
       <Form.Item
         name="role"
         rules={[

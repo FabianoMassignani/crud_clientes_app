@@ -45,6 +45,10 @@ const _ProfileList = (props: Props) => {
     loadAllUsers(accessToken, search, limit, page);
   }
 
+  const onLoadDefault = () => {
+    onLoad('', 10, 0);
+  }
+
   const onLoadTimered = (search: string) => {
     let timer
 
@@ -108,6 +112,24 @@ const _ProfileList = (props: Props) => {
       ),
     },
     {
+      title: 'Tags',
+      dataIndex: 'tags',
+      key: 'tags',
+      render: (tags: any) => (
+        <>
+          {tags.map((tag: any) => {
+            let color = 'blue';
+
+            return (
+              <Tag color={color} key={tag}>
+                {tag.toUpperCase()}
+              </Tag>
+            );
+          })}
+        </>
+      ),
+    },
+    {
       title: 'Papel',
       key: 'role',
       dataIndex: 'role',
@@ -149,7 +171,7 @@ const _ProfileList = (props: Props) => {
           <Button
             type="primary"
             danger
-            disabled={!userCurrent.role.includes('ADMIN')}
+            disabled={!userCurrent.role.includes('ADMIN') || userCurrent._id === user._id}
             onClick={() => showConfirm(user)}>
             Deletar
           </Button>
@@ -174,6 +196,9 @@ const _ProfileList = (props: Props) => {
                 allowClear
                 enterButton
                 onSearch={value => onLoadTimered(value)}
+                onChange={(e) => {
+                  onLoadTimered(e.target.value)
+                }}
               />
             )
           }
@@ -205,9 +230,9 @@ const _ProfileList = (props: Props) => {
         centered
       >
         <ProfileUpdate
-          user={user}
+          user={user as IUser}
           handleClose={handleClose}
-          onLoad={onLoad}
+          onLoad={onLoadDefault}
         />
       </Modal>
     </div>
