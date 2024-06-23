@@ -1,4 +1,4 @@
-# React + TypeScript + Vite
+# App com React + TypeScript + Vite para consumir a API de CRUD de Clientes e Usuários 
 
 ## Como Rodar o Projeto Localmente
 
@@ -12,6 +12,7 @@ git clone https://github.com/FabianoMassignani/crud_clientes_app.git
 2. Instale as dependências:
 
 ```
+cd crud_clientes_app
 npm install
 
 ```
