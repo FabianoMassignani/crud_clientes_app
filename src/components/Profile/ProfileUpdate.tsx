@@ -254,13 +254,14 @@ const _ProfileUpdate = (props: Props) => {
       </Form.Item>
 
       <Form.Item
-        name="active"
+        name="active" valuePropName="checked"
       >
-        Ativo:
         <Switch
-          defaultChecked={user.active}
-        />;
+          checkedChildren="Ativo"
+          unCheckedChildren="Inativo"
+        />
       </Form.Item>
+
 
       <Form.Item>
         <div className='update-form-actions'>
